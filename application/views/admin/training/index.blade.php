@@ -46,8 +46,8 @@ Trainings
                       <td><a target="_blank" href="{{base_url()}}admin/training/{{$training->id}}/show">{{$training->name}}</a></td>
                       <td>{{word_limiter($training->description, 15)}}</td>
                       <td>10</td>
-                      <td>10</td>
-                      <td>10</td>
+                      <td>{{ $training->topics->count() }}</td>
+                      <td>{{ $training->topics->unique('speaker_id')->count() }}</td>
                       <td>{{nice_date($training->start, 'F d, Y h:i A')}}</td>
                       <td>{{nice_date($training->end, 'F d, Y h:i A')}}</td>
                       <td>

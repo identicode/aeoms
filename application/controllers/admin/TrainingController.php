@@ -6,12 +6,11 @@ class TrainingController extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('TrainingModel');
     }
 
 	public function index()
 	{
-        $trainings = TrainingModel::get();
+        $trainings = TrainingModel::with('topics.speaker')->get();
 		return $this->slice->view('admin.training.index',[
             'trainings' => $trainings
         ]);
@@ -38,7 +37,11 @@ class TrainingController extends CI_Controller {
 
     public function show($id)
     {
-        $training = TrainingModel::where('id', $id)->get()->first();
+        $training = TrainingModel::with('topics.speaker', 'participants.student')->where('id', $id)->get()->first();
+
+        // echo json_encode($training);
+
+        // return die;
 
         return $this->slice->view('admin.training.show', [
             'training' => $training

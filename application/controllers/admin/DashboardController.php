@@ -5,6 +5,7 @@ class DashboardController extends CI_Controller {
 
 	public function index()
 	{
+		// echo json_encode($_SESSION);
 		return $this->slice->view('admin.dashboard');
 	}
 }

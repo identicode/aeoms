@@ -36,7 +36,20 @@ Speakers
                 </tr>
                 </thead>
                 <tbody>
-                 
+                 @foreach($speakers as $i => $speaker)
+                  <tr>
+                    <td> {{ ++$i }} </td>
+                    <td>{{$speaker->fname." ".$speaker->lname}}</td>
+                    <td>
+                      <a href="{{base_url()}}uploads/speakers/{{$speaker->image}}" target="_blank"><img src="{{base_url()}}uploads/speakers/{{$speaker->image}}" alt="Speaker Image" class="img-thumbnail" width="100px" height="100px"></a>
+                    </td>
+                    <td>{{ $speaker->description }}</td>
+                    <td>
+                      <a href="{{base_url()}}admin/speaker/{{$speaker->id}}/edit" class="btn btn-xs bg-gradient-warning">Edit</a>
+                      <a href="{{base_url()}}admin/speaker/{{$speaker->id}}/delete" class="btn btn-xs bg-gradient-danger">Delete</a>
+                    </td>
+                  </tr>
+                 @endforeach
                 </tbody>
               </table>
             </div>

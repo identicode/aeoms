@@ -11,4 +11,14 @@ class TrainingModel extends Eloquent
     protected $guarded = [];
     protected $table = "training";
 
+    public function topics()
+    {
+        return $this->hasMany('TopicModel', 'training_id');
+    }
+
+    public function participants()
+    {
+        return $this->hasMany('ParticipantModel', 'training_id');
+    }
+
 }

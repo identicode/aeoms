@@ -1,6 +1,8 @@
 @extends('admin.layouts.app')
 
 @section('css-top')
+<!-- DataTables -->
+<link rel="stylesheet" href="{{asset_url()}}plugins/datatables-bs4/css/dataTables.bootstrap4.css">
 @endsection
 
 @section('css-bot')
@@ -18,8 +20,7 @@ Training Details
     <div class="card-body">
         <div class="row">
             <div class="col-5">
-
-                <h3 class="text-primary"><i class="fas fa-paint-brush"></i> {{ $training->name }}</h3>
+                <h3 class="text-primary">{{ $training->name }}</h3>
                 <p class="text-muted">{{ $training->description }}</p>
                 <br>
                 <div class="text-muted">
@@ -34,7 +35,7 @@ Training Details
                     </p>
                 </div>
                 <div class="text-center mt-5 mb-3">
-                  <a href="#" class="btn btn-sm bg-gradient-primary">Add Topic</a>
+                  <a href="{{ base_url() }}admin/training/{{ $training->id }}/topic/create" class="btn btn-sm bg-gradient-primary">Add Topic</a>
                   <a href="#" class="btn btn-sm bg-gradient-warning">Cancel this Training</a>
                 </div>
 
@@ -45,7 +46,7 @@ Training Details
                         <div class="info-box bg-light">
                           <div class="info-box-content">
                             <span class="info-box-text text-center text-muted">Participants</span>
-                            <span class="info-box-number text-center text-muted mb-0">2300</span>
+                            <span class="info-box-number text-center text-muted mb-0">{{ $training->participants->where('approved', 1)->count() }}</span>
                           </div>
                         </div>
                       </div>
@@ -53,7 +54,7 @@ Training Details
                         <div class="info-box bg-light">
                           <div class="info-box-content">
                             <span class="info-box-text text-center text-muted">Topics</span>
-                            <span class="info-box-number text-center text-muted mb-0">1</span>
+                            <span class="info-box-number text-center text-muted mb-0">{{ $training->topics->count() }}</span>
                           </div>
                         </div>
                       </div>
@@ -61,7 +62,7 @@ Training Details
                         <div class="info-box bg-light">
                           <div class="info-box-content">
                             <span class="info-box-text text-center text-muted">Speakers</span>
-                            <span class="info-box-number text-center text-muted mb-0">20 <span>
+                            <span class="info-box-number text-center text-muted mb-0">{{ $training->topics->unique('speaker_id')->count() }}<span>
                           </div>
                         </div>
                       </div>
@@ -70,30 +71,124 @@ Training Details
                     <div class="col-12">
                         <h4>Topics</h4>
                         <hr>
-                        <div class="post">
-                            <div class="user-block">
-                            <img class="img-circle img-bordered-sm" src="{{base_url()}}uploads/speakers/default.jpg" alt="user image">
-                              <span class="username">
-                                <a href="#">Ricardo D. Dalisay</a>
-                              </span>
-                              <span class="description">Teacher I</span>
-                            </div>
-                            <!-- /.user-block -->
-                            <p><strong>Topic: </strong> Human Anatomy</p>
-                            <p><strong>Date: </strong> March 01, 2020 01:01 AM - March 01, 2020 01:01 AM</p>
-                           
-                          </div>
-                          <hr>
+                        <table id="topics-dataTable" class="table table-bordered table-striped">
+                          <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Speaker</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            @foreach($training->topics as $i => $topic)
+                              <tr>
+                                <td>{{ ++$i }}</td>
+                                <td>{{ $topic->title }}</td>
+                                <td>{{ $topic->speaker->description }}</td>
+                                <td>{{ $topic->speaker->fname." ".$topic->speaker->lname }}</td>
+                                <td>{{ nice_date($topic->start, 'F d, Y h:i A') }} - {{ nice_date($topic->end, 'F d, Y h:i A') }}</td>
+                                <td>
+                                  <a href="{{ base_url() }}admin/training/2/topic/{{ $topic->id }}/edit" class="btn btn-xs bg-gradient-warning"> <i class="fa fa-edit"></i> Edit</a>
+                                  <a href="{{ base_url() }}admin/training/2/topic/{{ $topic->id }}/delete" class="btn btn-xs bg-gradient-danger"> <i class="fa fa-trash"></i> Delete</a>
+                                </td>
+                              </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@php
+    $participants = $training->participants->where('approved', 1);
+    $pendings = $training->participants->where('approved', 0);
+    $x = 0;
+    $y = 0;
+@endphp
+
+<div class="row">
+  <div class="col-6">
+    <div class="card">
+      <div class="card-body">
+        <h4>Participants</h4>
+        <hr>
+        <table id="participants-dataTable" class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Department - Year</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          @foreach ($participants as $participant)
+              <tr>
+                <td>{{ ++$x }}</td>
+                <td>{{ $participant->student->fname." ".$participant->student->lname }}</td>
+                <td></td>
+                <td>
+                  <a href="{{ base_url() }}admin/participant/{{ $participant->id }}/disapprove" class="btn btn-xs bg-gradient-danger">Remove</a>
+                </td>
+              </tr>
+          @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="card">
+      <div class="card-body">
+        <h4>Pending for Approval</h4>
+            <hr>
+            <table id="pending-participants-dataTable" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Department - Year</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              @foreach ($pendings as $pending)
+                <tr>
+                  <td>{{ ++$y }}</td>
+                  <td>{{ $pending->student->fname." ".$pending->student->lname }}</td>
+                  <td></td>
+                  <td>
+                    <a href="{{ base_url() }}admin/participant/{{ $pending->id }}/approve" class="btn btn-xs bg-gradient-success">Approve</a>
+                    <a href="{{ base_url() }}admin/participant/{{ $pending->id }}/disapprove" class="btn btn-xs bg-gradient-warning">Disapprove</a>
+                  </td>
+                </tr>
+              @endforeach
+              </tbody>
+            </table>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('js-top')
+<!-- DataTables -->
+<script src="{{asset_url()}}plugins/datatables/jquery.dataTables.js"></script>
+<script src="{{asset_url()}}plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
 @endsection
 
 @section('js-bot')
+<script>
+  $(function () {
+    $("#topics-dataTable").DataTable();
+    $("#participants-dataTable").DataTable();
+    $("#pending-participants-dataTable").DataTable();
+  });
+</script>
 @endsection

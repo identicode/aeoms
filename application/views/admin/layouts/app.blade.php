@@ -15,12 +15,16 @@
         <link rel="stylesheet" href="{{asset_url()}}plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
         <!-- Toastr -->
         <link rel="stylesheet" href="{{asset_url()}}plugins/toastr/toastr.min.css">
+        <!-- Select2 -->
+        <link rel="stylesheet" href="{{asset_url()}}plugins/select2/css/select2.min.css">
         <!-- Theme style -->
         <link rel="stylesheet" href="{{asset_url()}}css/adminlte.min.css">
         <!-- Google Font: Source Sans Pro -->
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+        <!-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> -->
          <!-- WHIRL -->
          <link rel="stylesheet" href="{{asset_url()}}plugins/whirl/whirl.min.css">
+
+         
 
         @section('css-bot')
         @show
@@ -146,11 +150,24 @@
     <!-- Toastr -->
     <script src="{{asset_url()}}plugins/toastr/toastr.min.js"></script>
 
+    <!-- Select2 -->
+    <script src="{{asset_url()}}plugins/select2/js/select2.full.min.js"></script>
+
     @section('js-top')
     @show
 
     <!-- AdminLTE App -->
     <script src="{{asset_url()}}js/adminlte.min.js"></script>
+
+
+    <script>
+        $(function () {
+          //Initialize Select2 Elements
+          $('.select2').select2({
+            placeholder: "Select from list"
+          })
+        })
+    </script>
 
     @section('js-bot')
     @show

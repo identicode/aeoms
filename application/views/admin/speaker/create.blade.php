@@ -22,7 +22,7 @@ Create New Speaker
                 <h3 class="card-title">Fill Up The Form</h3>
             </div>
 
-            <form role="form" method="POST" action="{{current_url()}}">
+            <form role="form" method="POST" action="{{current_url()}}" enctype="multipart/form-data">
               <div class="card-body">
                 <div class="form-group">
                   <label for="fname">First Name</label>

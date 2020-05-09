@@ -23,3 +23,13 @@ function redirect_back()
 
     redirect(base_url());
 }
+
+/**
+ * Select helper
+ * @param string
+ * @param string
+ * @return string
+ */
+function select_helper($a, $b){
+    return ($a == $b) ? 'selected' : false;
+}
